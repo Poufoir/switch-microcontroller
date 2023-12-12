@@ -3,7 +3,8 @@ import torch.nn.functional as F
 import torch
 
 import numpy as np
-from functools import cache
+from torchvision import transforms
+from PIL import Image
 
 
 class RegressionModel(nn.Module):
@@ -29,7 +30,6 @@ class RegressionModel(nn.Module):
         return x
 
 
-@cache
 def get_model():
     model = RegressionModel()
     model.load_state_dict(torch.load("model_train.pt"))
@@ -39,5 +39,5 @@ def get_model():
 
 def predict_image(image: np.ndarray):
     model = get_model()
-    frame = torch.from_numpy(image / 255).permute(2, 0, 1).type(torch.DoubleTensor)
+    frame = transforms.ToTensor()(Image.fromarray(image)).double()
     return torch.round(model(frame)[0]).type(torch.int)
