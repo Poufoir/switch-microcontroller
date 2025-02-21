@@ -44,8 +44,7 @@ class Color(NamedTuple):
 
 
 class Matcher(Protocol):
-    def __call__(self, frame: numpy.ndarray) -> bool:
-        ...
+    def __call__(self, frame: numpy.ndarray) -> bool: ...
 
 
 class Action(Protocol):
@@ -53,8 +52,7 @@ class Action(Protocol):
         self,
         vid: cv2.VideoCapture,
         ser: serial.Serial,
-    ) -> None:
-        ...
+    ) -> None: ...
 
 
 class Press(NamedTuple):
@@ -315,3 +313,13 @@ def run(
 
         if time.monotonic() > t0 + transition_timeout:
             raise SystemExit(f"stalled in state {state}")
+
+
+if __name__ == "__main__":
+    vid = make_vid()
+    while True:
+        frame = getframe(vid)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
+    vid.release()
+    cv2.destroyAllWindows()
